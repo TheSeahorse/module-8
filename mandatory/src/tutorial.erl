@@ -168,8 +168,11 @@ simpsons(pets) ->
 %% </div>
 -spec char_to_upper(char()) -> char().
 
-char_to_upper(Char) when true->
-    tbi.
+%% ÄR DET HÄR VERKLIGEN RÄTT?
+char_to_upper(Char) when Char < 97 ->
+    Char;
+char_to_upper(Char) ->
+    Char - 32.
 
 %% @doc Convert a character to lower case.
 %% === Example ===
@@ -181,8 +184,11 @@ char_to_upper(Char) when true->
 %% </div>
 -spec char_to_lower(char()) -> char().
 
-char_to_lower(Char) when true ->
-    tbi.
+%% ÄR DET HÄR VERKLIGEN RÄTT?
+char_to_lower(Char) when Char < 65; Char > 90 ->
+    Char;
+char_to_lower(Char) ->
+    Char + 32.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%  Map  %%%%%%%%%%
@@ -199,8 +205,8 @@ char_to_lower(Char) when true ->
 -spec str_to_upper(string()) -> string().
 
 str_to_upper(String) ->
-    tbi.
-
+   %% [char_to_upper(X) || X <- String].
+   lists:map(fun tutorial:char_to_upper/1, String).
 
 %% @doc Convert a string to lower case.
 %% === Example ===
@@ -211,7 +217,7 @@ str_to_upper(String) ->
 -spec str_to_lower(string()) -> string().
 
 str_to_lower(String) ->
-    tbi.
+    lists:map(fun tutorial:char_to_lower/1, String).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%  Fold %%%%%%%%%%
@@ -227,9 +233,11 @@ str_to_lower(String) ->
       L::[integer()],
       M::integer().
 
+
+   %% What you return in your function F will be the new value of Acc, and eventually the value lists:foldl/3 will return.
 max([H | T]) ->
-    F = tbi,
-    lists:foldl(F, H, T).
+    F = fun(X, [H1|T1]) -> X > H1, F(X, T1) end %% Should be an anon function --> Syntax: fun (arg1,...argn) -> ... end 
+    lists:foldl(F, H, T). %% Foldl(Fun, Acc0, List)
 
 
 %% @doc Returns the number of times Char occurs in String.
@@ -247,7 +255,7 @@ count(String, Char) ->
 
     F = tbi,
 
-    lists:foldl(F, 0, String).
+    lists:foldl(F, 0, String). 
 
 
 %% @doc Returns a tuple {{odd, Odd}, {even, Even}} where Odd and Even
