@@ -23,7 +23,7 @@ hello() ->
 %%%%%%%%%%  Recursive functions %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% @doc TODO: add description here
+%% @doc Function writing "Hello" N number of times
 -spec hello(N::integer()) -> ok.
 
 hello(0) ->
@@ -57,7 +57,7 @@ fac(N) -> N*fac(N-1).
 %%%%%%%%%%  Tail Recursive functions %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% @doc The factorial function, implemented using tail recursion.
+%% @doc The factorial function, implemetutnted using tail recursion.
 -spec fac_tr(N::integer()) -> integer().
 
 fac_tr(N) ->
@@ -66,7 +66,7 @@ fac_tr(N) ->
 fac_tr(0, Acc) ->
     Acc;
 fac_tr(N, Acc) ->
-    tbi.
+    fac_tr(N-1,N*Acc).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,7 +89,8 @@ fac_tr(N, Acc) ->
 
 right_triangles(N) ->
     L = lists:seq(1, N),
-    tbi.
+    [{A, B, C} || C <- L, C > 4, 
+    lists:seq(1, C)]. %%%HÄR ÄR JAG ==================
 
 %% @doc Returns a list of tuples, where each tuple describes a caracter in the Simposon family.
 %%
@@ -139,13 +140,17 @@ simpsons() ->
       Name::string().
 
 simpsons(names) ->
-    tbi;
+    L = simpsons(),
+    [Name || {Species, Gender, Name} <- L];
 simpsons(males) ->
-    tbi;
+    L = simpsons(),
+    [Name || {Species, Gender, Name} <- L, Gender == male];
 simpsons(females) ->
-    tbi;
+    L = simpsons(),
+    [Name || {Species, Gender, Name} <- L, Gender == female];
 simpsons(pets) ->
-    tbi.
+    L = simpsons(),
+    [Name || {Species, Gender, Name} <- L, Species /= person].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%  Guarded Functions  %%%%%%%%%%
