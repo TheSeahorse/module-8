@@ -75,6 +75,7 @@ fac_tr(N, Acc) ->
 
 
 %% @doc Generates a list of tuples {A,B,C} such that A and B are sides
+%% Den ska alltså vara sqrt(a^2+b^2=c^2)
 %% in a right triangle with hypotenuse C, where `A,B,C <= N'.
 %% === Example ===
 %% <div class="example">```
@@ -88,9 +89,10 @@ fac_tr(N, Acc) ->
       C::integer().
 
 right_triangles(N) ->
-    L = lists:seq(1, N),
-    [{A, B, C} || C <- L, C > 4, 
-    lists:seq(1, C)]. %%%HÄR ÄR JAG ==================
+    L = lists:seq(1, N), %% Gör en lista med en sequence [1,2...,N]
+    [{A, B, C} ||  C <- L, 
+    A <- L, B <- L, math:pow(A,2) + math:pow(B,2) =:= math:pow(C,2)
+    ].
 
 %% @doc Returns a list of tuples, where each tuple describes a caracter in the Simposon family.
 %%
