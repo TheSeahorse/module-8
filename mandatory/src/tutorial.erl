@@ -167,9 +167,9 @@ simpsons(pets) ->
 %% 64'''
 %% </div>
 -spec char_to_upper(char()) -> char().
-
+%% Lower char har ascii 97 - 122
 %% ÄR DET HÄR VERKLIGEN RÄTT?
-char_to_upper(Char) when Char < 97 ->
+char_to_upper(Char) when Char < 97; Char > 122 ->
     Char;
 char_to_upper(Char) ->
     Char - 32.
@@ -184,6 +184,7 @@ char_to_upper(Char) ->
 %% </div>
 -spec char_to_lower(char()) -> char().
 
+%% Stora char har ascii 65 - 90
 %% ÄR DET HÄR VERKLIGEN RÄTT?
 char_to_lower(Char) when Char < 65; Char > 90 ->
     Char;
