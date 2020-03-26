@@ -249,14 +249,18 @@ max([H | T]) ->
 %% </div>
 
 -spec count(String, Char) -> integer() when
-      String::string(),
-      Char::char().
+    String::string(),
+    Char::char().
 
 count(String, Char) ->
 
-    F = tbi,
+%% What you return in your function F will be the new value of Acc, and eventually the value lists:foldl/3 will return.
+    F = fun(X, A) -> case X of
+                        Char -> A+1;
+                        _ -> A end
+                        end,
 
-    lists:foldl(F, 0, String). 
+    lists:foldl(F, 0, String).
 
 
 %% @doc Returns a tuple {{odd, Odd}, {even, Even}} where Odd and Even
@@ -274,7 +278,8 @@ count(String, Char) ->
 odd_and_even(List) ->
     F = fun(X, {{odd, Odd}, {even, Even}}) when X rem 2 == 0 ->
                 {{odd, Odd}, {even, [X | Even]}};
-           (X, {{odd, Odd}, {even, Even}})  -> tbi
+            (X, {{odd, Odd}, {even, Even}})  -> 
+                {{odd, [X | Odd]}, {even, Even}}
         end,
 
     lists:foldl(F, {{odd, []}, {even, []}}, List).
