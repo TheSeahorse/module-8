@@ -237,7 +237,7 @@ str_to_lower(String) ->
 
    %% What you return in your function F will be the new value of Acc, and eventually the value lists:foldl/3 will return.
 max([H | T]) ->
-    F = fun(X, [H1|T1]) -> X > H1, F(X, T1) end %% Should be an anon function --> Syntax: fun (arg1,...argn) -> ... end 
+    F = fun(L, A) -> max(L, A) end, %% Should be an anon function --> Syntax: fun (arg1,...argn) -> ... end 
     lists:foldl(F, H, T). %% Foldl(Fun, Acc0, List)
 
 
