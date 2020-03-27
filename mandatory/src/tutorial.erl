@@ -57,7 +57,7 @@ fac(N) -> N*fac(N-1).
 %%%%%%%%%%  Tail Recursive functions %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% @doc The factorial function, implemetutnted using tail recursion.
+%% @doc The factorial function, implemented using tail recursion.
 -spec fac_tr(N::integer()) -> integer().
 
 fac_tr(N) ->
@@ -75,7 +75,6 @@ fac_tr(N, Acc) ->
 
 
 %% @doc Generates a list of tuples {A,B,C} such that A and B are sides
-%% Den ska alltså vara sqrt(a^2+b^2=c^2)
 %% in a right triangle with hypotenuse C, where `A,B,C <= N'.
 %% === Example ===
 %% <div class="example">```
