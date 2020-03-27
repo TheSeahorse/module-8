@@ -1,3 +1,0 @@
-%% encoding: UTF-8
-{application,'Module 8 - OSPP (1DT096) 2018'}.
-{modules,[bang,death,fifo,link,sfifo,state,swap,tutorial]}.
