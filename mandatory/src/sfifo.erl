@@ -36,11 +36,12 @@ loop(Fifo) ->
 	    PID ! fifo:empty(Fifo),
 	    loop(Fifo);
 	{push, PID, Value} ->
-	    PID ! {push, fifo:push(Fifo, Value)},
-	    loop(Fifo);
+	    PID ! {push},
+	    loop(fifo:push(Fifo, Value));
 	{pop, PID} ->
-	    PID ! {pop, fifo:pop(Fifo)},
-	    loop(Fifo)
+	    {Element, NewFifo} = fifo:pop(Fifo),
+	    PID ! {pop, Element},
+	    loop(NewFifo)
     end.
 
 
@@ -95,8 +96,8 @@ pop(Fifo) ->
 push(Fifo, Value) ->
     Fifo ! {push, self(), Value},
     receive
-	{push, NewFifo} ->
-	    NewFifo
+	{push} ->
+	    ok
     end.
 
 
