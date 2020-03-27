@@ -19,7 +19,7 @@
 
 new() -> {fifo, [], []}.
 
-%% @doc TODO Add a description
+%% @doc Returns the amount of elements in a Fifo buffer
 -spec size(Fifo) -> integer() when
       Fifo::fifo().
 
@@ -27,8 +27,10 @@ size({fifo, In, Out}) ->
     length(In) + length(Out).
 
 
-%% @doc TODO Add a description
-%% TODO: add a -spec type declaration
+%% @doc Pushes an element to the Fifo buffer, and returns the updated Fifo buffer
+-spec push(Fifo, Element) -> Fifo when
+      Element::term,
+      Fifo::fifo().
 
 %% To make it fast to push new values, add a new value to the head of
 %% In.
@@ -36,9 +38,11 @@ size({fifo, In, Out}) ->
 push({fifo, In, Out}, X) ->
     {fifo, [X|In], Out}.
 
-%% @doc TODO Add a description
+%% @doc Returns the first element in a Fifo buffer and the updated Fifo buffer
 %% @throws 'empty fifo'
-%% TODO: add a -spec type declaration
+-spec pop(Fifo) -> {Element, Fifo} when
+      Fifo::fifo(),
+      Element::term.
 
 %% pop should return {Value, NewFifo}
 
@@ -60,7 +64,7 @@ pop({fifo, In, []}) ->
     {H, {fifo, [], T}}.
 
 
-%% @doc TODO Add a description
+%% @doc Returns whether the Fifo buffer is empty or not.
 -spec empty(Fifo) -> boolean() when Fifo::fifo().
 
 empty({fifo, [], []}) ->
