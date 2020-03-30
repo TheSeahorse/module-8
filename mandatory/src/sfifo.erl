@@ -32,12 +32,12 @@ loop(Fifo) ->
 	{size, PID} ->
 	    PID ! {size, fifo:size(Fifo)},
 	    loop(Fifo);
-	{empty, PID} ->
+	{empty, PID} -> %% Här har vi då fått meddelandet empty, PID nerifrån. Då skickar vi tillbaka till piden det vi får av att kalla empty
 	    PID ! fifo:empty(Fifo),
 	    loop(Fifo);
 	{push, PID, Value} ->
 	    PID ! {push},
-	    loop(fifo:push(Fifo, Value));
+	    loop(fifo:push(Fifo, Value)); %% Här loopar vi ju då runt med den nya FIfon som state
 	{pop, PID} ->
 	    {Element, NewFifo} = fifo:pop(Fifo),
 	    PID ! {pop, Element},
@@ -63,7 +63,8 @@ size(Fifo) ->
 -spec empty(Fifo) -> true|false when Fifo::sfifo().
 
 empty(Fifo) ->
-    Fifo ! {empty, self()},
+    Fifo ! {empty, self()}, %% När vi kallar på Fifo så skickar vi till fifo ett meddelande med empty, self()
+                            %% Detta går då till loopen eftersom den recieves ett meddelande ^
     receive
 	true ->
 	    true;
@@ -94,7 +95,7 @@ pop(Fifo) ->
       Value::term().
 
 push(Fifo, Value) ->
-    Fifo ! {push, self(), Value},
+    Fifo ! {push, self(), Value}, 
     receive
 	{push} ->
 	    ok

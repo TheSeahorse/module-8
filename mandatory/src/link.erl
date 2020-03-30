@@ -11,8 +11,13 @@
 -export([start/0]).
 
 start() ->
-    spawn(fun() -> worker() end),
-    timer:sleep(5000).
+    process_flag(trap_exit, true), %% Sätter upp en trap exit som fångar in meddelandet
+    spawn_link(fun() -> worker() end), %% sätter upp en link mellan processen den spawnar och spawnaren
+
+    receive %% Väntar på exit-meddelandet
+        {'EXIT', PID, Reason} ->
+            io:format("Worker ~p terminated with reason ~w!~n", [PID, Reason])
+    end.
 
 worker() ->
     timer:sleep(3000),

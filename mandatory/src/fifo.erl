@@ -35,7 +35,7 @@ size({fifo, In, Out}) ->
 %% To make it fast to push new values, add a new value to the head of
 %% In.
 
-push({fifo, In, Out}, X) ->
+push({fifo, In, Out}, X) -> %% Lägger till X som huvudet på listan IN
     {fifo, [X|In], Out}.
 
 %% @doc Returns the first element in a Fifo buffer and the updated Fifo buffer
@@ -51,7 +51,7 @@ pop({fifo, [], []}) ->
 
 %% To make pop fast we want to pop of the head of the Out list.
 
-pop({fifo, In, [H|T]}) ->
+pop({fifo, In, [H|T]}) -> %% Returnar en tuple med H och sen Fifo
     {H, {fifo, In, T}};
 
 %% When Out is empty, we must take a performance penalty. Use the

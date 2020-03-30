@@ -10,6 +10,7 @@
 %% @doc Start the system. 
 -spec start() -> ok. 
 start() ->
+    process_flag(trap_exit, true), %% Traps the signal
     io:format("~nSupervisor with PID ~p started~n", [self()]),
 
     %% TODO: trap the exit signal.
@@ -31,7 +32,11 @@ supervisor_loop(Counter) ->
         {countdown, N} ->
             io:format("~w ~s~n", [N, counter_msg(N)]),
             supervisor_loop(N - 1);
-        {'EXIT', PID, Reason} ->
+        {'EXIT', PID, random_death} -> %% Kollar om Exit statusen vi får är == random_death. Då kör vi denna
+            io:format("bang(~w) with PID ~p died~n", [Counter, PID]),
+            start_bang(Counter), %% Startar om
+            supervisor_loop(Counter - 1); %% Kör igång loopen igen med - 1 på countern
+        {'EXIT', PID, Reason} -> %% Här har vi ju bara fått en exit status
             io:format("Process ~w terminated with reason ~w!~n", [PID, Reason])
     end.
 
@@ -41,6 +46,6 @@ bang(Supervisor, 0) ->
     exit(bang);
 bang(Supervisor, Counter) ->
     timer:sleep(1000),
-    %% death:gamble(0.3),
+    death:gamble(0.3),
     Supervisor ! {countdown, Counter},
     bang(Supervisor, Counter - 1).

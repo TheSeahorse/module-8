@@ -60,14 +60,24 @@ fac(N) -> N*fac(N-1).
 %% @doc The factorial function, implemented using tail recursion.
 -spec fac_tr(N::integer()) -> integer().
 
-fac_tr(N) ->
+fac_tr(N) -> %% Pattern matchingen börjar ju med denna och kallar då sig självt med N, 1
     fac_tr(N,1).
 
-fac_tr(0, Acc) ->
+fac_tr(0, Acc) -> %% Om N är 0 så returnas Acc
     Acc;
-fac_tr(N, Acc) ->
+fac_tr(N, Acc) -> %% Annars denna som då gör den klassiska recursionen, N-1 samtidigt som NewAcc blir N*Acc
     fac_tr(N-1,N*Acc).
 
+%% Den blir tail recursive eftersom vi sparar i en temporär variabel så att vi bara behöver ha två variablar i minnet
+%% I en vanlig recursion är vi ju beroende av evaluation av deras andra parter
+%% Så 1 + len(rest) behöver resultatet av len(rest) som behöver resultatet av osv osv. Dessa stackas.
+
+%% tail_fac(4)    = tail_fac(4,1)
+%% tail_fac(4,1)  = tail_fac(4-1, 4*1)
+%% tail_fac(3,4)  = tail_fac(3-1, 3*4)
+%% tail_fac(2,12) = tail_fac(2-1, 2*12)
+%% tail_fac(1,24) = tail_fac(1-1, 1*24)
+%% tail_fac(0,24) = 24
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%  List Comprehensions %%%%%%%%%%
@@ -90,8 +100,10 @@ fac_tr(N, Acc) ->
 right_triangles(N) ->
     L = lists:seq(1, N), %% Gör en lista med en sequence [1,2...,N]
     [{A, B, C} ||  C <- L, 
-    A <- L, B <- L, math:pow(A,2) + math:pow(B,2) =:= math:pow(C,2)
+    A <- L, B <- L, math:pow(A,2) + math:pow(B,2) =:= math:pow(C,2) %% Lägger bara till de som uppfyller predikatet A^2 + B^2 == C^2
     ].
+
+%% Syntax: {2n : n in L} (mängdlära) => 1> [2*N || N <- [1,2,3,4]]. i erlang 
 
 %% @doc Returns a list of tuples, where each tuple describes a caracter in the Simposon family.
 %%
@@ -142,16 +154,16 @@ simpsons() ->
 
 simpsons(names) ->
     L = simpsons(),
-    [Name || {Species, Gender, Name} <- L];
+    [Name || {Species, Gender, Name} <- L]; %% Säger att alla ska komma från L som är Simpsons. Alltså alla namn
 simpsons(males) ->
     L = simpsons(),
-    [Name || {Species, Gender, Name} <- L, Gender == male];
+    [Name || {Species, Gender, Name} <- L, Gender == male]; %% Lägger till predikatet att Gender måste vara Male
 simpsons(females) ->
     L = simpsons(),
-    [Name || {Species, Gender, Name} <- L, Gender == female];
+    [Name || {Species, Gender, Name} <- L, Gender == female]; %% Predikatet att Gender måste vara female
 simpsons(pets) ->
     L = simpsons(),
-    [Name || {Species, Gender, Name} <- L, Species /= person].
+    [Name || {Species, Gender, Name} <- L, Species /= person]. %% Predikatet inte person
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%  Guarded Functions  %%%%%%%%%%
@@ -166,11 +178,10 @@ simpsons(pets) ->
 %% 64'''
 %% </div>
 -spec char_to_upper(char()) -> char().
-%% Lower char har ascii 97 - 122
-%% ÄR DET HÄR VERKLIGEN RÄTT?
-char_to_upper(Char) when Char < 97; Char > 122 ->
+%% Lower char har ascii 97 – 122
+char_to_upper(Char) when Char < 97; Char > 122 -> %% Om karaktären är mindre än 97 och större än 122 är det inte lower
     Char;
-char_to_upper(Char) ->
+char_to_upper(Char) -> %% Annars tar vi bort 32 för att få rätt
     Char - 32.
 
 %% @doc Convert a character to lower case.
@@ -184,8 +195,8 @@ char_to_upper(Char) ->
 -spec char_to_lower(char()) -> char().
 
 %% Stora char har ascii 65 - 90
-%% ÄR DET HÄR VERKLIGEN RÄTT?
-char_to_lower(Char) when Char < 65; Char > 90 ->
+
+char_to_lower(Char) when Char < 65; Char > 90 -> %% Kollar om inputen är mindre än 65 eller Större än 90, då är det inte upper case så bara att returna
     Char;
 char_to_lower(Char) ->
     Char + 32.
@@ -206,7 +217,7 @@ char_to_lower(Char) ->
 
 str_to_upper(String) ->
    %% [char_to_upper(X) || X <- String].
-   lists:map(fun tutorial:char_to_upper/1, String).
+   lists:map(fun tutorial:char_to_upper/1, String). %% Map kör en function på alla värden (String är en list av ascii-världen)
 
 %% @doc Convert a string to lower case.
 %% === Example ===
@@ -235,6 +246,8 @@ str_to_lower(String) ->
 
 
    %% What you return in your function F will be the new value of Acc, and eventually the value lists:foldl/3 will return.
+   %% Fold bygger upp ett ackumelerat värde genom att köra F på alla i listan. Därför returnar F max av det värdet vi
+   %% är på i listan och det tidigare acc. Sen returnar vi det större och kollar detta genom hela.
 max([H | T]) ->
     F = fun(L, A) -> max(L, A) end, %% Should be an anon function --> Syntax: fun (arg1,...argn) -> ... end 
     lists:foldl(F, H, T). %% Foldl(Fun, Acc0, List)
@@ -254,6 +267,8 @@ max([H | T]) ->
 count(String, Char) ->
 
 %% What you return in your function F will be the new value of Acc, and eventually the value lists:foldl/3 will return.
+%% Här startar vi då med acc 0, sedan kör vi med case som kollar om X är samma som Char: returnar Acc + 1
+%% Annars går vi bara vidare
     F = fun(X, A) -> case X of
                         Char -> A+1;
                         _ -> A end
@@ -275,10 +290,10 @@ count(String, Char) ->
       Even::[integer()].
 
 odd_and_even(List) ->
-    F = fun(X, {{odd, Odd}, {even, Even}}) when X rem 2 == 0 ->
-                {{odd, Odd}, {even, [X | Even]}};
-            (X, {{odd, Odd}, {even, Even}})  -> 
-                {{odd, [X | Odd]}, {even, Even}}
+    F = fun(X, {{odd, Odd}, {even, Even}}) when X rem 2 == 0 -> %% JÄMNT
+                {{odd, Odd}, {even, [X | Even]}}; %% Lägger ju då bara till X som huvudet på tailen Even :D
+            (X, {{odd, Odd}, {even, Even}})  ->  %% Annars är det ju udda
+                {{odd, [X | Odd]}, {even, Even}} %% Lägger då bara till X som huvudet på ODd
         end,
 
-    lists:foldl(F, {{odd, []}, {even, []}}, List).
+    lists:foldl(F, {{odd, []}, {even, []}}, List). %% Acc är alltså en tuple här 
