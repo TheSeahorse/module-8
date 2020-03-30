@@ -21,19 +21,12 @@
 
 new() -> {fifo, [], []}.
 
-<<<<<<< HEAD
-%% @doc TODO Add a description
--spec size(Fifo) -> integer() when Fifo :: fifo().
-=======
 %% @doc Returns the amount of elements in a Fifo buffer
 -spec size(Fifo) -> integer() when
       Fifo::fifo().
 
 size({fifo, In, Out}) ->
     length(In) + length(Out).
->>>>>>> a6b1d0751fd4d722f8aeaa908fddade90f05735c
-
-size({fifo, In, Out}) -> length(In) + length(Out).
 
 %% @doc Pushes an element to the Fifo buffer, and returns the updated Fifo buffer
 -spec push(Fifo, Element) -> Fifo when
@@ -62,13 +55,9 @@ pop({fifo, In, [H | T]}) -> {H, {fifo, In, T}};
 pop({fifo, In, []}) ->
     L = lists:reverse(In), [H | T] = L, {H, {fifo, [], T}}.
 
-<<<<<<< HEAD
-%% @doc TODO Add a description
--spec empty(Fifo) -> boolean() when Fifo :: fifo().
-=======
+
 %% @doc Returns whether the Fifo buffer is empty or not.
 -spec empty(Fifo) -> boolean() when Fifo::fifo().
->>>>>>> a6b1d0751fd4d722f8aeaa908fddade90f05735c
 
 empty({fifo, [], []}) -> true;
 empty({fifo, _, _}) -> false.
